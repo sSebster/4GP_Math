@@ -97,6 +97,19 @@ struct Particle {
     }
 };
 
+struct Segment
+{
+    glm::vec2 A;
+    glm::vec2 B;
+
+    glm::vec2 normal() const
+    {
+        glm::vec2 dir = B - A;
+        glm::vec2 n = glm::normalize(glm::vec2(-dir.y, dir.x)); // Perpendicular
+        return n;
+    }
+};
+
 int main()
 {
     gl::init("Particules!");
@@ -105,6 +118,19 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     std::vector<Particle> particles(100);
+    std::vector<Segment> segments;
+    for (int i = 0; i < 5; ++i)
+    {
+        glm::vec2 A{
+            utils::rand(-gl::window_aspect_ratio(), +gl::window_aspect_ratio()),
+            utils::rand(-1.f, +1.f),
+        };
+        glm::vec2 B{
+            utils::rand(-gl::window_aspect_ratio(), +gl::window_aspect_ratio()),
+            utils::rand(-1.f, +1.f),
+        };
+        segments.push_back({A, B});
+    }
 
     while (gl::window_is_open())
     {
@@ -113,7 +139,8 @@ int main()
 
         for (auto& particle : particles)
         {
-            particle.age += gl::delta_time_in_seconds();
+            glm::vec2 previous = particle.position;
+            //particle.age += gl::delta_time_in_seconds();
 
             auto forces = glm::vec2{0.f};
 
@@ -126,28 +153,46 @@ int main()
             // Follow mouse
             // forces += (gl::mouse_position() - particle.position);
 
-            particle.velocity += forces / particle.mass * gl::delta_time_in_seconds();
-            particle.position += particle.velocity * gl::delta_time_in_seconds();
-        }
 
-        std::erase_if(particles, [&](Particle const& particle) { return particle.age > particle.lifespan; });
+            glm::vec2 new_pos = particle.position + particle.velocity * gl::delta_time_in_seconds();
+            for (auto const &seg : segments)
+            {
+                // Utilisation correcte de intersect_segments pour détecter une collision avec un segment
+                if (auto hit = intersect_segments(previous, new_pos, seg.A, seg.B))
+                {
+                    // Calcul de la normale du segment
+                    glm::vec2 n = seg.normal();
 
-        for (auto const& particle : particles)
-            utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
+                    // Réflexion de la vélocité de la particule par rapport à la normale
+                    particle.velocity = glm::reflect(particle.velocity, glm::normalize(-n));
 
-        //Line
-        //draw_line(glm::vec2 start, glm::vec2 end, float thickness, glm::vec4 const& color)
-        utils::draw_line(glm::vec2(-1,0), glm::vec2(1,0), 0.01, glm::vec4{1.f, 0.f, 0.f, 1.f});
-        utils::draw_line(glm::vec2(0,-0.75), gl::mouse_position(), 0.01, glm::vec4{1.f, 1.f, 1.f, 1.f});
+                    // Mise à jour de la position après la collision, tout en respectant la direction et le temps écoulé
+                    new_pos = hit->point + particle.velocity * gl::delta_time_in_seconds();
+                }
+                particle.position = new_pos;
+                particle.velocity += forces / particle.mass * gl::delta_time_in_seconds();
+                particle.position += particle.velocity * gl::delta_time_in_seconds();
+            }
 
-        auto A = glm::vec2(-1, 0);
-        auto B = glm::vec2(1, 0);
-        auto C = glm::vec2(0, -0.75f);
-        auto D = gl::mouse_position();
+            std::erase_if(particles, [&](Particle const& particle) { return particle.age > particle.lifespan; });
 
-        if (auto res = intersect_segments(A, B, C, D)) {
-            // draw_point(glm::vec2 pos, float size, glm::vec4 const& color)
-            utils::draw_disk(res->point, 0.02f, glm::vec4{0.f, 1.f, 0.f, 1.f});
+            for (auto const& particle : particles)
+                utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
+
+            //Line
+            //draw_line(glm::vec2 start, glm::vec2 end, float thickness, glm::vec4 const& color)
+            utils::draw_line(glm::vec2(-1,0), glm::vec2(1,0), 0.01, glm::vec4{1.f, 0.f, 0.f, 1.f});
+            utils::draw_line(glm::vec2(0,-0.75), gl::mouse_position(), 0.01, glm::vec4{1.f, 1.f, 1.f, 1.f});
+
+            auto A = glm::vec2(-1, 0);
+            auto B = glm::vec2(1, 0);
+            auto C = glm::vec2(0, -0.75f);
+            auto D = gl::mouse_position();
+
+            if (auto res = intersect_segments(A, B, C, D)) {
+                // draw_point(glm::vec2 pos, float size, glm::vec4 const& color)
+                utils::draw_disk(res->point, 0.02f, glm::vec4{0.f, 1.f, 0.f, 1.f});
+            }
         }
     }
 }
