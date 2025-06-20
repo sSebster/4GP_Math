@@ -101,5 +101,10 @@ int main()
 
         for (auto const& particle : particles)
             utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
+
+        //Line
+        //draw_line(glm::vec2 start, glm::vec2 end, float thickness, glm::vec4 const& color)
+        utils::draw_line(glm::vec2(-1,0), glm::vec2(1,0), 0.01, glm::vec4{1.f, 0.f, 0.f, 1.f});
+        utils::draw_line(glm::vec2(0,-0.75), gl::mouse_position(), 0.01, glm::vec4{1.f, 1.f, 1.f, 1.f});
     }
 }
