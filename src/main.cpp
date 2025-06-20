@@ -2,6 +2,39 @@
 #include "opengl-framework/opengl-framework.hpp"
 #include "utils.hpp"
 
+
+struct IntersectionResult {
+    glm::vec2 point;
+    float t, s;
+};
+
+std::optional<IntersectionResult> intersect_segments(const glm::vec2& A, const glm::vec2& B,
+                                                     const glm::vec2& C, const glm::vec2& D)
+{
+    glm::vec2 u = B - A;
+    glm::vec2 v = D - C;
+    glm::vec2 w = C - A;
+    // Matrice M = [u, -v]
+    glm::mat2 M(u, -v);
+    float det = glm::determinant(M);
+
+    if (glm::abs(det) < 1e-6f)
+        return std::nullopt;  // Parallèles ou colinéaires
+
+    glm::mat2 invM = glm::inverse(M);
+    glm::vec2 ts = invM * w;
+    float t = ts.x;
+    float s = ts.y;
+
+    if (t >= 0.0f && t <= 1.0f && s >= 0.0f && s <= 1.0f) {
+        glm::vec2 P = A + t * u;
+        return IntersectionResult{P, t, s};
+    }
+
+    return std::nullopt;
+}
+
+
 float easeInOut(float x, float power)
 {
     if (x < 0.5)
@@ -25,7 +58,7 @@ struct Particle {
     float mass{utils::rand(1.f, 2.f)};
 
     float age{0.f};
-    float lifespan{utils::rand(3.f, 5.f)};
+    float lifespan{utils::rand(5.f, 15.f)};
 
     glm::vec3 start_color{
         utils::rand(0.f, 1.f),
@@ -106,5 +139,15 @@ int main()
         //draw_line(glm::vec2 start, glm::vec2 end, float thickness, glm::vec4 const& color)
         utils::draw_line(glm::vec2(-1,0), glm::vec2(1,0), 0.01, glm::vec4{1.f, 0.f, 0.f, 1.f});
         utils::draw_line(glm::vec2(0,-0.75), gl::mouse_position(), 0.01, glm::vec4{1.f, 1.f, 1.f, 1.f});
+
+        auto A = glm::vec2(-1, 0);
+        auto B = glm::vec2(1, 0);
+        auto C = glm::vec2(0, -0.75f);
+        auto D = gl::mouse_position();
+
+        if (auto res = intersect_segments(A, B, C, D)) {
+            // draw_point(glm::vec2 pos, float size, glm::vec4 const& color)
+            utils::draw_disk(res->point, 0.02f, glm::vec4{0.f, 1.f, 0.f, 1.f});
+        }
     }
 }
