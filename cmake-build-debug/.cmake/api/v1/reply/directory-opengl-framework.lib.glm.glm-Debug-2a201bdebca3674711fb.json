@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "opengl-framework/lib/glm/glm",
+		"source" : "opengl-framework/lib/glm/glm"
+	}
+}

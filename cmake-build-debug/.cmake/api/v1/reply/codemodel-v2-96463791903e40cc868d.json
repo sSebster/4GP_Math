@@ -1,0 +1,275 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "opengl-framework",
+					"childIndexes" : 
+					[
+						2,
+						4,
+						5,
+						6
+					],
+					"jsonFile" : "directory-opengl-framework-Debug-a5556fecd5c10c74f63a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "opengl-framework",
+					"targetIndexes" : 
+					[
+						2,
+						5
+					]
+				},
+				{
+					"build" : "opengl-framework/lib/glm",
+					"childIndexes" : 
+					[
+						3
+					],
+					"jsonFile" : "directory-opengl-framework.lib.glm-Debug-0cbc01c070b4eb251431.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "opengl-framework/lib/glm",
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"build" : "opengl-framework/lib/glm/glm",
+					"jsonFile" : "directory-opengl-framework.lib.glm.glm-Debug-2a201bdebca3674711fb.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "opengl-framework/lib/glm/glm"
+				},
+				{
+					"build" : "opengl-framework/lib/img",
+					"jsonFile" : "directory-opengl-framework.lib.img-Debug-f3c966a4635734f71921.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 0,
+					"source" : "opengl-framework/lib/img",
+					"targetIndexes" : 
+					[
+						4,
+						6
+					]
+				},
+				{
+					"build" : "opengl-framework/lib/exe_path",
+					"jsonFile" : "directory-opengl-framework.lib.exe_path-Debug-8ec802ac4cc61e11e9f4.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 0,
+					"source" : "opengl-framework/lib/exe_path",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "opengl-framework/lib/glfw",
+					"childIndexes" : 
+					[
+						7
+					],
+					"jsonFile" : "directory-opengl-framework.lib.glfw-Debug-142bec555596b5f5a975.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 2,
+					"source" : "opengl-framework/lib/glfw"
+				},
+				{
+					"build" : "opengl-framework/lib/glfw/src",
+					"jsonFile" : "directory-opengl-framework.lib.glfw.src-Debug-ddddeaef62cf4627d708.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 6,
+					"projectIndex" : 2,
+					"source" : "opengl-framework/lib/glfw/src",
+					"targetIndexes" : 
+					[
+						3,
+						8
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						4,
+						5
+					],
+					"name" : "Particles",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						4,
+						5,
+						6
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2,
+						3
+					],
+					"name" : "glm",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						6,
+						7
+					],
+					"name" : "GLFW",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						3,
+						8
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Particles::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Particles-Debug-3654b17196a6711c9270.json",
+					"name" : "Particles",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "exe_path::@4733f89c039058117c03",
+					"jsonFile" : "target-exe_path-Debug-410f1b2bbae25a72a03e.json",
+					"name" : "exe_path",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "glad::@df116619b2487fa10f3e",
+					"jsonFile" : "target-glad-Debug-a7f3b54ce3f7bed8ccae.json",
+					"name" : "glad",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "glfw::@f5cc38a58c92ad250bdb",
+					"jsonFile" : "target-glfw-Debug-4b99623636f14d6bf8e2.json",
+					"name" : "glfw",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "img::@d51e3b7203d9003fae2a",
+					"jsonFile" : "target-img-Debug-7da21f8650a9f5c0df7f.json",
+					"name" : "img",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "opengl_framework::@df116619b2487fa10f3e",
+					"jsonFile" : "target-opengl_framework-Debug-fcb63804316407e0850e.json",
+					"name" : "opengl_framework",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "stb_image::@d51e3b7203d9003fae2a",
+					"jsonFile" : "target-stb_image-Debug-d8078e7b2fd829143ef1.json",
+					"name" : "stb_image",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "uninstall::@a60b057b1bf30c85a43d",
+					"jsonFile" : "target-uninstall-Debug-cd3126a9b5321261d595.json",
+					"name" : "uninstall",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "update_mappings::@f5cc38a58c92ad250bdb",
+					"jsonFile" : "target-update_mappings-Debug-2f91d6582e73a08d0007.json",
+					"name" : "update_mappings",
+					"projectIndex" : 2
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/PC/CLionProjects/4GP_Math/cmake-build-debug",
+		"source" : "C:/Users/PC/CLionProjects/4GP_Math"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
