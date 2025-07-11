@@ -109,6 +109,21 @@ struct Segment
         return n;
     }
 };
+glm::vec2 cacaprout(glm::vec2 origin, float radius)
+{
+    float x = utils::rand(-1.f, 1.f);
+    float y = utils::rand(-1.f, 1.f);
+    glm::vec2 offset = glm::vec2(x, y) * radius;
+
+    if (glm::length(offset) <= radius)
+    {
+        return origin + offset;
+    }
+    else
+    {
+        return cacaprout(origin, radius); // récursion si en dehors du cercle
+    }
+}
 
 int main()
 {
@@ -145,10 +160,12 @@ int main()
 
         glm::vec2 ori (0.,0.);
         float angle = utils::rand(0,360);
-        float rad = utils::rand(0.f, 1.2f);
+        //float rad = utils::rand(0.f, 1.2f);
+        float rad = 1.f;
 
         glm::vec2 pos = ori + glm::vec2(glm::cos(angle)*rad, glm::sin(angle)*rad);
         particle.position = pos;
+        particle.position = cacaprout(ori, rad);
     }
 
     while (gl::window_is_open())
