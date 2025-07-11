@@ -138,9 +138,17 @@ int main()
     {
         glm::vec2 xV(0.1f,0.f);
         glm::vec2 yV(0.85f,-0.2f);
-        particle.position = xV*utils::rand(-1.f, 1.f) + yV*utils::rand(-1.f, 1.f);
 
-            //glm::vec2(utils::rand(0,1)*xV.x,utils::rand(0,1)*yV.y);
+        //glm::vec2(utils::rand(0,1)*xV.x,utils::rand(0,1)*yV.y);
+
+        //particle.position = xV*utils::rand(-1.f, 1.f) + yV*utils::rand(-1.f, 1.f);
+
+        glm::vec2 ori (0.,0.);
+        float angle = utils::rand(0,360);
+        float rad = utils::rand(0.f, 1.2f);
+
+        glm::vec2 pos = ori + glm::vec2(glm::cos(angle)*rad, glm::sin(angle)*rad);
+        particle.position = pos;
     }
 
     while (gl::window_is_open())
