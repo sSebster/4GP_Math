@@ -136,9 +136,11 @@ int main()
 
     for (auto& particle : particles)
     {
-        glm::vec2 xV(-0.5f,0.5f);
-        glm::vec2 yV(-0.5f,0.5f);
-        particle.position = glm::vec2(utils::rand(0,1)*xV.x,utils::rand(0,1)*yV.y);
+        glm::vec2 xV(0.1f,0.f);
+        glm::vec2 yV(0.85f,-0.2f);
+        particle.position = xV*utils::rand(-1.f, 1.f) + yV*utils::rand(-1.f, 1.f);
+
+            //glm::vec2(utils::rand(0,1)*xV.x,utils::rand(0,1)*yV.y);
     }
 
     while (gl::window_is_open())
