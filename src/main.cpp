@@ -197,7 +197,30 @@ glm::vec2 bezier3_bernstein(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 
          + 3 * u * tt * p2
          + tt * t * p3;
 }
+float find_closest_t_on_bezier3(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, glm::vec2 Q)
+{
+    float t = 0.5f;
+    float learning_rate = 0.01f;
+    int max_iterations = 100;
 
+    for (int i = 0; i < max_iterations; ++i)
+    {
+        float dt = 0.001f;
+
+        glm::vec2 B1 = bezier3_bernstein(p0, p1, p2, p3, t);
+        glm::vec2 B2 = bezier3_bernstein(p0, p1, p2, p3, t + dt);
+
+        float d1 = glm::dot(B1 - Q, B1 - Q);
+        float d2 = glm::dot(B2 - Q, B2 - Q);
+
+        float gradient = (d2 - d1) / dt;
+
+        t -= learning_rate * gradient;
+        t = glm::clamp(t, 0.0f, 1.0f);
+    }
+
+    return t;
+}
 int main()
 {
     gl::init("Particules!");
@@ -280,10 +303,18 @@ int main()
             return bezier3_bernstein(p0, p1, p2, p3, t);
         });
 
-        for (auto const& particle : particles)
-        {
-            utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
-        }
+        glm::vec2 Q = gl::mouse_position();
+
+        glm::vec2 p0 = {-0.6f, -0.6f};
+        glm::vec2 p1 = {-0.2f, 0.5f};
+        glm::vec2 p2 = gl::mouse_position(); // ou figé si besoin
+        glm::vec2 p3 = {0.8f, 0.5f};
+
+        float t_closest = find_closest_t_on_bezier3(p0, p1, p2, p3, Q);
+        glm::vec2 closest_point = bezier3_bernstein(p0, p1, p2, p3, t_closest);
+
+        utils::draw_disk(closest_point, 0.015f, {0.f, 1.f, 0.f, 1.f}); // vert
+        utils::draw_disk(Q, 0.015f, {1.f, 0.f, 0.f, 1.f});
 
         /*draw_parametric([](float t) {
             return bezier3({-.3f, -.3f}, {-0.2f, 0.5f}, gl::mouse_position(), {.8f, .5f}, t);
