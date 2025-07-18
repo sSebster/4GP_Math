@@ -234,7 +234,7 @@ int main()
     glm::vec2 p2 = gl::mouse_position(); // ou fixe-le une fois pour éviter les incohérences
     glm::vec2 p3 = {0.8f, 0.5f};
 
-    int N = static_cast<int>(particles.size());
+    /*int N = static_cast<int>(particles.size());
     for (int i = 0; i < N; ++i)
     {
         float t = static_cast<float>(i) / (N - 1);
@@ -249,7 +249,7 @@ int main()
 
         glm::vec2 normal = glm::normalize(glm::vec2(-tangent.y, tangent.x)); // 90° rotation
         particles[i].velocity = 0.2f * normal; // vitesse initiale le long de la normale
-    }
+    }*/
     //std::vector<Segment> segments;
 
 
@@ -266,55 +266,58 @@ int main()
         segments.push_back({A, B});
     }*/
 
-    /*for (auto& particle : particles)
+    for (auto& particle : particles)
     {
-        glm::vec2 xV(0.1f,0.f);
-        glm::vec2 yV(0.85f,-0.2f);
+        int N = static_cast<int>(particles.size());
 
-        //glm::vec2(utils::rand(0,1)*xV.x,utils::rand(0,1)*yV.y);
+        for (int i = 0; i < N; ++i)
+        {
+            // x fixe à gauche, y réparti verticalement
+            float x = -0.9f;
+            float y = -1.f + 2.f * static_cast<float>(i) / (N - 1); // de -1 à +1
 
-        //particle.position = xV*utils::rand(-1.f, 1.f) + yV*utils::rand(-1.f, 1.f);
+            particles[i].position = glm::vec2(x, y);
 
-        glm::vec2 ori (0.,0.);
-        float angle = utils::rand(0,360);
-        //float rad = utils::rand(0.f, 1.2f);
-        float rad = 0.75f;
-
-        glm::vec2 pos = ori + glm::vec2(glm::cos(angle)*rad, glm::sin(angle)*rad);
-        particle.position = pos;
-        particle.position = cacaprout(ori, rad);
-    }*/
+            // Pas de vitesse initiale, ou vers le bas si tu veux tester sans champ de force
+            particles[i].velocity = glm::vec2(0.f, 0.f); // ou glm::vec2(0.f, -0.1f);
+        }
+    }
 
     while (gl::window_is_open())
     {
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        for (auto& particle : particles)
-        {
-            particle.position += particle.velocity * gl::delta_time_in_seconds();
-        }
-
-        draw_parametric([](float t) {
-            glm::vec2 p0 = {-0.6f, -0.6f};
-            glm::vec2 p1 = {-0.2f, 0.5f};
-            glm::vec2 p2 = gl::mouse_position();
-            glm::vec2 p3 = {0.8f, 0.5f};
-            return bezier3_bernstein(p0, p1, p2, p3, t);
-        });
-
-        glm::vec2 Q = gl::mouse_position();
-
         glm::vec2 p0 = {-0.6f, -0.6f};
         glm::vec2 p1 = {-0.2f, 0.5f};
-        glm::vec2 p2 = gl::mouse_position(); // ou figé si besoin
+        glm::vec2 p2 = gl::mouse_position(); // ou figé
         glm::vec2 p3 = {0.8f, 0.5f};
 
-        float t_closest = find_closest_t_on_bezier3(p0, p1, p2, p3, Q);
-        glm::vec2 closest_point = bezier3_bernstein(p0, p1, p2, p3, t_closest);
+        draw_parametric([](float t) {
+    glm::vec2 p0 = {-0.6f, -0.6f};
+    glm::vec2 p1 = {-0.2f, 0.5f};
+    glm::vec2 p2 = gl::mouse_position(); // ou figé
+    glm::vec2 p3 = {0.8f, 0.5f};
+    return bezier3_bernstein(p0, p1, p2, p3, t);
+});
 
-        utils::draw_disk(closest_point, 0.015f, {0.f, 1.f, 0.f, 1.f}); // vert
-        utils::draw_disk(Q, 0.015f, {1.f, 0.f, 0.f, 1.f});
+        for (auto& particle : particles)
+        {
+            float t_closest = find_closest_t_on_bezier3(p0, p1, p2, p3, particle.position);
+            glm::vec2 P = bezier3_bernstein(p0, p1, p2, p3, t_closest);
+
+            glm::vec2 dir_to_curve = P - particle.position;
+            float dist = glm::length(dir_to_curve);
+            glm::vec2 dir_normale = dist > 0 ? dir_to_curve / dist : glm::vec2(0);
+
+            float strength = 4.0f / (4.0f + dist); // déclin doux
+            glm::vec2 force = strength * dir_normale;
+
+            glm::vec2 acceleration = force / particle.mass;
+            particle.velocity += acceleration * gl::delta_time_in_seconds();
+            particle.position += particle.velocity * gl::delta_time_in_seconds();
+            utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
+        }
 
         /*draw_parametric([](float t) {
             return bezier3({-.3f, -.3f}, {-0.2f, 0.5f}, gl::mouse_position(), {.8f, .5f}, t);
