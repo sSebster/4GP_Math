@@ -160,6 +160,43 @@ glm::vec2 bezier1_casteljau(glm::vec2 p0, glm::vec2 p1, float t)
 {
     return glm::mix(p0, p1, t);
 }
+glm::vec2 bezier2_casteljau(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, float t)
+{
+    glm::vec2 a = glm::mix(p0, p1, t);
+    glm::vec2 b = glm::mix(p1, p2, t);
+    return glm::mix(a, b, t);
+}
+glm::vec2 bezier3_casteljau(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, float t)
+{
+    glm::vec2 a = glm::mix(p0, p1, t);
+    glm::vec2 b = glm::mix(p1, p2, t);
+    glm::vec2 c = glm::mix(p2, p3, t);
+
+    glm::vec2 d = glm::mix(a, b, t);
+    glm::vec2 e = glm::mix(b, c, t);
+
+    return glm::mix(d, e, t);
+}
+glm::vec2 bezier1_bernstein(glm::vec2 p0, glm::vec2 p1, float t)
+{
+    return (1 - t) * p0 + t * p1;
+}
+glm::vec2 bezier2_bernstein(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, float t)
+{
+    float u = 1 - t;
+    return u*u * p0 + 2*u*t * p1 + t*t * p2;
+}
+glm::vec2 bezier3_bernstein(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, float t)
+{
+    float u = 1 - t;
+    float uu = u * u;
+    float tt = t * t;
+
+    return uu * u * p0
+         + 3 * uu * t * p1
+         + 3 * u * tt * p2
+         + tt * t * p3;
+}
 
 int main()
 {
@@ -170,11 +207,6 @@ int main()
 
     //std::vector<Particle> particles(5000);
     //std::vector<Segment> segments;
-
-
-    /*draw_parametric([](float t) {
-return bezier3({-.3f, -.3f}, {-0.2f, 0.5f}, gl::mouse_position(), {.8f, .5f}, t);
-});*/
 
 
     /*for (int i = 0; i < 5; ++i)
@@ -209,17 +241,51 @@ return bezier3({-.3f, -.3f}, {-0.2f, 0.5f}, gl::mouse_position(), {.8f, .5f}, t)
         particle.position = cacaprout(ori, rad);
     }*/
 
-
-
-
     while (gl::window_is_open())
     {
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        draw_parametric([](float t) {
+        /*draw_parametric([](float t) {
             return bezier3({-.3f, -.3f}, {-0.2f, 0.5f}, gl::mouse_position(), {.8f, .5f}, t);
         });
+        draw_parametric([](float t) {
+    return bezier3_casteljau({-.3f, -.3f}, {-0.2f, 0.5f}, gl::mouse_position(), {.8f, .5f}, t);
+});
+        draw_parametric([](float t) {
+    return bezier1_casteljau(glm::vec2(-0.8f, -0.8f), glm::vec2(0.8f, 0.8f), t);
+});
+        draw_parametric([](float t) {
+    return bezier1_bernstein(glm::vec2(-0.8f, -0.8f), glm::vec2(0.8f, 0.8f), t);
+});
+        draw_parametric([](float t) {
+    glm::vec2 p0 = {-0.8f, -0.6f};
+    glm::vec2 p1 = {-0.2f, 0.9f};
+    glm::vec2 p2 = gl::mouse_position();
+    return bezier2_casteljau(p0, p1, p2, t);
+});
+        draw_parametric([](float t) {
+    glm::vec2 p0 = {-0.8f, -0.6f};
+    glm::vec2 p1 = {-0.2f, 0.9f};
+    glm::vec2 p2 = gl::mouse_position();
+    return bezier2_bernstein(p0, p1, p2, t);
+});
+        draw_parametric([](float t) {
+    glm::vec2 p0 = {-0.6f, -0.6f};
+    glm::vec2 p1 = {-0.2f, 0.5f};
+    glm::vec2 p2 = gl::mouse_position();
+    glm::vec2 p3 = {0.8f, 0.5f};
+    return bezier3_casteljau(p0, p1, p2, p3, t);
+});*/
+        draw_parametric([](float t) {
+    glm::vec2 p0 = {-0.6f, -0.6f};
+    glm::vec2 p1 = {-0.2f, 0.5f};
+    glm::vec2 p2 = gl::mouse_position();
+    glm::vec2 p3 = {0.8f, 0.5f};
+    return bezier3_bernstein(p0, p1, p2, p3, t);
+});
+
+
         //for (auto const& particle : particles) utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
         //for (auto& particle : particles)
         //{
