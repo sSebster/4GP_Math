@@ -213,8 +213,10 @@ return bezier3({-.3f, -.3f}, {-0.2f, 0.5f}, gl::mouse_position(), {.8f, .5f}, t)
         glClear(GL_COLOR_BUFFER_BIT);
 
         draw_parametric([](float t) {
-            float angle = t * 2.f * glm::pi<float>(); // t ∈ [0,1] → angle ∈ [0,2π]
-            return glm::vec2(std::cos(angle), std::sin(angle));
+            float angle = t * 2.f * glm::pi<float>();
+            float x = 16 * std::pow(std::sin(angle), 3);
+            float y = 13 * std::cos(angle) - 5 * std::cos(2 * angle) - 2 * std::cos(3 * angle) - std::cos(4 * angle);
+            return 0.05f * glm::vec2(x, y); // Échelle pour tenir dans l'écran
         });
         //for (auto const& particle : particles) utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
         //for (auto& particle : particles)
