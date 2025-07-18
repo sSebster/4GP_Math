@@ -2,7 +2,6 @@
 #include "opengl-framework/opengl-framework.hpp"
 #include "utils.hpp"
 
-
 struct IntersectionResult {
     glm::vec2 point;
     float t, s;
@@ -125,6 +124,38 @@ glm::vec2 cacaprout(glm::vec2 origin, float radius)
     }
 }
 
+
+void draw_parametric(std::function<glm::vec2(float)> const& parametric)
+{
+    const int N = 100; // nombre de segments
+    const float thickness = .01f;
+    const glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f}; // blanc opaque
+
+    glm::vec2 prev = parametric(0.0f);
+    for (int i = 1; i <= N; ++i)
+    {
+        float t = static_cast<float>(i) / N;
+        glm::vec2 curr = parametric(t);
+
+        utils::draw_line(prev, curr, thickness, color);
+        prev = curr;
+    }
+}
+
+glm::vec2 bezier3(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, float t)
+{
+    glm::vec2 a = glm::mix(p0, p1, t);
+    glm::vec2 b = glm::mix(p1, p2, t);
+    glm::vec2 c = glm::mix(p2, p3, t);
+
+    glm::vec2 d = glm::mix(a, b, t);
+    glm::vec2 e = glm::mix(b, c, t);
+
+    glm::vec2 f = glm::mix(d, e, t);
+
+    return f;
+}
+
 int main()
 {
     gl::init("Particules!");
@@ -132,8 +163,13 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    std::vector<Particle> particles(3000);
-    std::vector<Segment> segments;
+    //std::vector<Particle> particles(5000);
+    //std::vector<Segment> segments;
+
+
+    /*draw_parametric([](float t) {
+return bezier3({-.3f, -.3f}, {-0.2f, 0.5f}, gl::mouse_position(), {.8f, .5f}, t);
+});*/
 
 
     /*for (int i = 0; i < 5; ++i)
@@ -149,7 +185,7 @@ int main()
         segments.push_back({A, B});
     }*/
 
-    for (auto& particle : particles)
+    /*for (auto& particle : particles)
     {
         glm::vec2 xV(0.1f,0.f);
         glm::vec2 yV(0.85f,-0.2f);
@@ -161,21 +197,28 @@ int main()
         glm::vec2 ori (0.,0.);
         float angle = utils::rand(0,360);
         //float rad = utils::rand(0.f, 1.2f);
-        float rad = 1.f;
+        float rad = 0.75f;
 
         glm::vec2 pos = ori + glm::vec2(glm::cos(angle)*rad, glm::sin(angle)*rad);
         particle.position = pos;
         particle.position = cacaprout(ori, rad);
-    }
+    }*/
+
+
+
 
     while (gl::window_is_open())
     {
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        for (auto const& particle : particles) utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
-        for (auto& particle : particles)
-        {
+        draw_parametric([](float t) {
+            float angle = t * 2.f * glm::pi<float>(); // t ∈ [0,1] → angle ∈ [0,2π]
+            return glm::vec2(std::cos(angle), std::sin(angle));
+        });
+        //for (auto const& particle : particles) utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
+        //for (auto& particle : particles)
+        //{
             //glm::vec2 previous = particle.position;
             //particle.age += gl::delta_time_in_seconds();
 
@@ -223,7 +266,7 @@ int main()
                 // draw_point(glm::vec2 pos, float size, glm::vec4 const& color)
                 //utils::draw_disk(res->point, 0.02f, glm::vec4{0.f, 1.f, 0.f, 1.f});
             //}
-        }
+        //}
 
         //Line
         //draw_line(glm::vec2 start, glm::vec2 end, float thickness, glm::vec4 const& color)
