@@ -205,7 +205,7 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    //std::vector<Particle> particles(5000);
+    std::vector<Particle> particles(50);
     //std::vector<Segment> segments;
 
 
@@ -284,6 +284,18 @@ int main()
     glm::vec2 p3 = {0.8f, 0.5f};
     return bezier3_bernstein(p0, p1, p2, p3, t);
 });
+        for (auto& particle : particles)
+        {
+            glm::vec2 p0 = {-0.6f, -0.6f};
+            glm::vec2 p1 = {-0.2f, 0.5f};
+            glm::vec2 p2 = gl::mouse_position(); // ← position dynamique
+            glm::vec2 p3 = {0.8f, 0.5f};
+
+            float t = utils::rand(0.f, 1.f); // ← paramètre t aléatoire
+            particle.position = bezier3_bernstein(p0, p1, p2, p3, t);
+            utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
+        }
+
 
 
         //for (auto const& particle : particles) utils::draw_disk(particle.position, particle.radius(), glm::vec4{particle.color(), 1.f});
